@@ -14,7 +14,7 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 SECRET_KEY = 'simple-secret-key'
 
 # Allowed hosts
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Together.ai API Key
 TOGETHER_API_KEY = os.getenv('TOGETHER_API_KEY', 'tgp_v1_dStKLklKWfd-fP-MIhyjw58CcjZLSoG74xgGZ2wfoQg')
