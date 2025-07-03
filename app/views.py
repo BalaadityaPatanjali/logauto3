@@ -247,7 +247,7 @@ def index(request):
             "selected_test": bundle,
         })
 
-    return render(request, 'app/index.html', context)
+    return render(request, 'index.html', context)
 
 def format_elasticsearch_logs(logs: List[Dict[str, Any]]) -> str:
     """Format Elasticsearch logs for display - ENHANCED FOR CLOUD"""
