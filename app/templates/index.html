@@ -1,0 +1,1570 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LogOps - DevOps Testing Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark Theme Color Palette */
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --bg-elevated: #374151;
+      --bg-surface: #0f1419;
+      --bg-overlay: rgba(17, 24, 39, 0.95);
+      
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-accent: #60a5fa;
+      
+      --accent-primary: #3b82f6;
+      --accent-secondary: #10b981;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-danger: #ef4444;
+      --accent-info: #06b6d4;
+      
+      --border-default: #374151;
+      --border-light: #374151;
+      --border-medium: #4b5563;
+      --border-accent: #3b82f6;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+      
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --gradient-info: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      
+      --backdrop-blur: blur(12px);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    }
+
+    /* Simplified Sidebar */
+    .sidebar {
+      width: 300px;
+      background: var(--bg-overlay);
+      backdrop-filter: var(--backdrop-blur);
+      border-right: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      z-index: 10;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+    }
+
+    /* Clean Header */
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--border-default);
+      flex-shrink: 0;
+      background: var(--bg-tertiary);
+      position: relative;
+    }
+
+    .sidebar-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-secondary), transparent);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f9fafb 0%, #d1d5db 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Simplified Content Area */
+    .sidebar-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar-content::-webkit-scrollbar-thumb {
+      background: var(--border-default);
+      border-radius: 3px;
+    }
+
+    /* Configuration Section */
+    .config-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    /* Clean Form Elements */
+    select, input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 16px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    input[type="text"], input[type="email"] {
+      background-image: none;
+    }
+
+    select:focus, input[type="text"]:focus, input[type="email"]:focus {
+      outline: none;
+      border-color: var(--accent-secondary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), var(--shadow-md);
+      background: var(--bg-tertiary);
+    }
+
+    select:disabled, input[type="text"]:disabled, input[type="email"]:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+      color: white !important;
+      border: 1px solid transparent !important;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .btn-primary:disabled {
+      background: var(--bg-elevated) !important;
+      color: var(--text-muted) !important;
+      cursor: not-allowed !important;
+      transform: none !important;
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn:disabled:hover {
+      transform: none;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 300px;
+      background: var(--bg-primary);
+    }
+
+    /* Clean Header */
+    .content-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border-default);
+      background: var(--bg-overlay);
+      backdrop-filter: var(--backdrop-blur);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .content-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 32px;
+      right: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-secondary), transparent);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .content-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-success);
+      animation: pulse 2s infinite;
+    }
+
+    /* Metrics */
+    .metrics {
+      display: flex;
+      gap: 32px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+      color: white !important;
+    }
+
+    .btn-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .btn-success {
+      background: var(--gradient-success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .btn-info {
+      background: var(--gradient-info);
+      color: white;
+    }
+
+    .btn-info:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .search-container::before {
+      content: '';
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3e%3c/svg%3e");
+      pointer-events: none;
+    }
+
+    #log-search {
+      padding-left: 44px;
+      margin: 0;
+      background: var(--bg-surface);
+    }
+
+    /* Output Container */
+    .output-container {
+      flex: 1;
+      padding: 24px 32px;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 24px;
+      min-height: 0;
+    }
+
+    /* Clean Output Cards */
+    .output-card {
+      background: var(--bg-overlay);
+      backdrop-filter: var(--backdrop-blur);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    .output-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+    }
+
+    .output-header {
+      padding: 16px 20px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-shrink: 0;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .output-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-info), transparent);
+    }
+
+    .header-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--gradient-info);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .card-controls {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .control-btn {
+      padding: 6px 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-accent);
+    }
+
+    /* Maximized state */
+    .output-card.maximized {
+      position: fixed;
+      top: 0;
+      left: 300px;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+      border-radius: 0;
+    }
+
+    .output-container.has-maximized .output-card:not(.maximized) {
+      display: none;
+    }
+
+    .output-content {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+      min-height: 0;
+    }
+
+    .output-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .output-content::-webkit-scrollbar-track {
+      background: var(--bg-surface);
+    }
+
+    .output-content::-webkit-scrollbar-thumb {
+      background: var(--border-default);
+      border-radius: 4px;
+    }
+
+    .output-content::-webkit-scrollbar-thumb:hover {
+      background: var(--border-accent);
+    }
+
+    /* Code Display */
+    pre {
+      margin: 0;
+      padding: 20px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      height: 100%;
+    }
+
+    #log {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+    }
+
+    #summary-output {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    /* Hidden state */
+    #summary-card.hidden {
+      display: none !important;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-default);
+      border-top: 2px solid var(--accent-secondary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Search Highlighting */
+    mark {
+      background: var(--accent-warning);
+      color: var(--bg-primary);
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Form States */
+    .error-state {
+      border-color: var(--accent-danger) !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    }
+
+    .success-state {
+      border-color: var(--accent-success) !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--gradient-success);
+      color: white;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      z-index: 9999;
+      transform: translateX(400px);
+      transition: transform 0.3s ease-out;
+      font-weight: 600;
+      max-width: 400px;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .toast-icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 280px;
+      }
+      
+      .main-content {
+        margin-left: 280px;
+      }
+      
+      .output-card.maximized {
+        left: 280px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+        max-height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .output-container {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .content-header {
+        padding: 16px 20px;
+      }
+
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar-right {
+        margin-left: 0;
+        justify-content: stretch;
+      }
+
+      .toolbar-right .btn {
+        flex: 1;
+      }
+
+      .search-container {
+        max-width: none;
+      }
+
+      .output-card.maximized {
+        left: 0;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <div class="logo-icon">LO</div>
+        <div>
+          <h1>LogOps</h1>
+          <div class="subtitle">DevOps Testing Portal</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sidebar-content">
+      <form method="POST" id="test-form">
+        {% csrf_token %}
+
+        <div class="config-section">
+          <div class="section-title">Application</div>
+          <select name="application" id="app-select" required>
+            <option value="">Select Application</option>
+          </select>
+
+          <div class="section-title">Azure Cluster</div>
+          <select name="cluster" id="cluster-select" required>
+            <option value="">Select Cluster</option>
+            {% for i in "1234" %}
+              <option value="cluster{{ i }}">Cluster Prod AKS {{ i }}</option>
+            {% endfor %}
+          </select>
+
+          <div class="section-title">Bundle Name</div>
+          <select name="testtype" id="bundle-select" required>
+            <option value="">Select Bundle</option>
+          </select>
+
+          <div class="section-title">Pods</div>
+          <select name="pod" id="pod-select" required>
+            <option value="">Select Pod</option>
+          </select>
+
+          <div class="section-title">Email for Reports</div>
+          <input type="email" id="email-input" placeholder="your.email@company.com" />
+
+          <div class="action-buttons">
+            {% if log_file_name %}
+            <button type="button" class="btn btn-secondary" onclick="downloadCurrentLog()">
+              Download Log
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="content-header">
+      <div class="header-top">
+        <div>
+          <h2>Test Execution Dashboard</h2>
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span id="status-text">LogOps Ready</span>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Uptime</div>
+            <div class="metric-value" id="uptime">00:00:02</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Tests</div>
+            <div class="metric-value" id="test-count">0</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="toolbar">
+        <div class="search-container">
+          <input type="text" id="log-search" placeholder="Search logs, errors, warnings..." />
+        </div>
+        <button onclick="searchLog()" class="btn btn-info">Search</button>
+        <div class="toolbar-right">
+          <button type="button" id="download-btn" class="btn btn-primary">
+            Download
+          </button>
+          <button type="button" id="summarize-btn" class="btn btn-success">
+            Summarize
+          </button>
+          <button type="button" id="analyze-btn" class="btn btn-warning">
+            RCA
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="output-container" id="output-container">
+      <div class="output-card" id="log-card">
+        <div class="output-header">
+          <span>Log Output</span>
+          <div class="card-controls">
+            <button class="control-btn" onclick="toggleMaximize('log-card')" title="Maximize/Restore">
+              <span id="log-maximize-icon">⛶</span>
+            </button>
+          </div>
+        </div>
+        <div class="output-content">
+          <pre id="log"><code>{{ log|default:"Welcome to LogOps Testing Portal. Select an application, cluster, bundle, and pod to view logs." }}</code></pre>
+        </div>
+      </div>
+
+      <div class="output-card" id="summary-card">
+        <div class="output-header">
+          <span>AI Analysis</span>
+          <div class="card-controls">
+            <button class="control-btn" onclick="toggleMaximize('summary-card')" title="Maximize/Restore">
+              <span id="summary-maximize-icon">⛶</span>
+            </button>
+          </div>
+        </div>
+        <div class="output-content">
+          <pre id="summary-output">Click "Summarize" or "RCA" to generate AI-powered analysis of your logs.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Enhanced summary card toggle
+  function toggleSummaryCard() {
+    const summaryCard = document.getElementById('summary-card');
+    const outputContainer = document.querySelector('.output-container');
+    
+    if (summaryCard.classList.contains('hidden')) {
+      summaryCard.classList.remove('hidden');
+      outputContainer.style.gridTemplateRows = '1fr 1fr';
+    } else {
+      summaryCard.classList.add('hidden');
+      outputContainer.style.gridTemplateRows = '1fr';
+    }
+  }
+
+  // Maximize/Minimize functionality
+  function toggleMaximize(cardId) {
+    const card = document.getElementById(cardId);
+    const container = document.getElementById('output-container');
+    const isLogCard = cardId === 'log-card';
+    const maximizeIcon = document.getElementById(isLogCard ? 'log-maximize-icon' : 'summary-maximize-icon');
+    
+    if (card.classList.contains('maximized')) {
+      // Restore
+      card.classList.remove('maximized');
+      container.classList.remove('has-maximized');
+      container.style.gridTemplateRows = '1fr 1fr';
+      maximizeIcon.textContent = '⛶';
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Maximize
+      card.classList.add('maximized');
+      container.classList.add('has-maximized');
+      maximizeIcon.textContent = '⊟';
+      document.body.style.overflow = 'auto';
+      
+      // Add escape key listener
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+          toggleMaximize(cardId);
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      };
+      document.addEventListener('keydown', escapeHandler);
+    }
+  }
+
+  // Search functionality
+  function searchLog() {
+    const keyword = document.getElementById('log-search').value.toLowerCase().trim();
+    const logPre = document.querySelector("#log code");
+    const originalText = logPre.getAttribute('data-original') || logPre.innerText;
+    
+    if (!logPre.getAttribute('data-original')) {
+      logPre.setAttribute('data-original', originalText);
+    }
+    
+    if (!keyword) {
+      logPre.innerHTML = originalText;
+      updateStatusText('LogOps Ready');
+      return;
+    }
+    
+ // FIXED - clean separation and proper escaping
+const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const highlighted = originalText.replace(
+  new RegExp(`(${escapedKeyword})`, 'gi'),
+  `<mark>$1</mark>`
+);
+    logPre.innerHTML = highlighted;
+    
+    // Count matches
+    const matches = (highlighted.match(/<mark>/g) || []).length;
+    updateStatusText(`Found ${matches} matches for "${keyword}"`);
+    
+    // Scroll to first match
+    const firstMatch = logPre.querySelector('mark');
+    if (firstMatch) {
+      firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  // Search on Enter key
+  document.getElementById('log-search').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      searchLog();
+    }
+  });
+
+  // Clear search when input is empty
+  document.getElementById('log-search').addEventListener('input', function(e) {
+    if (!e.target.value.trim()) {
+      searchLog();
+    }
+  });
+
+  // Status management
+  function updateStatusText(text) {
+    const statusElement = document.getElementById('status-text');
+    if (statusElement) {
+      statusElement.textContent = text;
+    }
+  }
+
+  // Application configuration
+  const clusterSelect = document.getElementById("cluster-select");
+  const bundleSelect = document.getElementById("bundle-select");
+  const podSelect = document.getElementById("pod-select");
+  const appSelect = document.getElementById("app-select");
+  let appConfig = {};
+  let testCount = 0;
+
+  // Load app configuration
+  fetch("/api/app-config/")
+  .then(res => res.json())
+  .then(data => {
+    appConfig = data;
+    appSelect.innerHTML = "<option value=''>Select Application</option>";
+    Object.keys(appConfig).forEach(appName => {
+      const opt = document.createElement("option");
+      opt.value = appName;
+      opt.textContent = appName;
+      appSelect.appendChild(opt);
+    });
+    bindAppEvents();
+    updateStatusText('Applications loaded');
+  })
+  .catch(error => {
+    console.error('Error loading app config:', error);
+    updateStatusText('Error loading applications');
+    appSelect.classList.add('error-state');
+  });
+
+  function bindAppEvents() {
+    appSelect.addEventListener("change", function() {
+      updateBundles();
+      this.classList.add('success-state');
+      setTimeout(() => this.classList.remove('success-state'), 2000);
+    });
+    
+    clusterSelect.addEventListener("change", function() {
+      updateBundles();
+      this.classList.add('success-state');
+      setTimeout(() => this.classList.remove('success-state'), 2000);
+    });
+    
+    bundleSelect.addEventListener("change", function() {
+      updatePods();
+      this.classList.add('success-state');
+      setTimeout(() => this.classList.remove('success-state'), 2000);
+    });
+    
+    podSelect.addEventListener("change", function() {
+      this.classList.add('success-state');
+      setTimeout(() => this.classList.remove('success-state'), 2000);
+      
+      // Auto-load logs when pod is selected
+      if (this.value) {
+        fetchPodLogs();
+      }
+    });
+  }
+
+  function updateBundles() {
+    const selectedApp = appSelect.value;
+    const selectedCluster = clusterSelect.value;
+    bundleSelect.innerHTML = "<option value=''>Select Bundle</option>";
+    podSelect.innerHTML = "<option value=''>Select Pod</option>";
+    
+    if (selectedApp && selectedCluster && appConfig[selectedApp]) {
+      appConfig[selectedApp].bundles.forEach(bundle => {
+        const opt = document.createElement("option");
+        opt.value = bundle.toLowerCase().replace(/\s+/g, '-');
+        opt.textContent = bundle;
+        bundleSelect.appendChild(opt);
+      });
+      updateStatusText(`${appConfig[selectedApp].bundles.length} bundles available`);
+    }
+  }
+
+  function updatePods() {
+    const selectedApp = appSelect.value;
+    const selectedCluster = clusterSelect.value;
+    const selectedBundle = bundleSelect.value;
+    
+    podSelect.innerHTML = "<option value=''>Select Pod</option>";
+    
+    if (selectedApp && selectedCluster && selectedBundle) {
+      updateStatusText('Loading pods...');
+      
+      const loadingOption = document.createElement("option");
+      loadingOption.value = "";
+      loadingOption.textContent = "Loading pods...";
+      loadingOption.disabled = true;
+      podSelect.appendChild(loadingOption);
+      
+      fetch("/api/pods/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: new URLSearchParams({
+          application: selectedApp,
+          cluster: selectedCluster,
+          bundle: selectedBundle
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        podSelect.innerHTML = "<option value=''>Select Pod</option>";
+        if (data.pods && data.pods.length > 0) {
+          data.pods.forEach(pod => {
+            const opt = document.createElement("option");
+            opt.value = pod.name || pod;
+            opt.textContent = pod.display_name || pod.name || pod;
+            podSelect.appendChild(opt);
+          });
+          updateStatusText(`${data.pods.length} pods available`);
+        } else {
+          const noPodOption = document.createElement("option");
+          noPodOption.value = "";
+          noPodOption.textContent = "No pods available";
+          noPodOption.disabled = true;
+          podSelect.appendChild(noPodOption);
+          updateStatusText('No pods found');
+        }
+      })
+      .catch(error => {
+        console.error('Error loading pods:', error);
+        podSelect.innerHTML = "<option value=''>Error loading pods</option>";
+        updateStatusText('Error loading pods');
+        podSelect.classList.add('error-state');
+      });
+    }
+  }
+
+// Replace your existing fetchPodLogs function with this updated version
+
+function fetchPodLogs() {
+  const selectedApp = appSelect.value;
+  const selectedCluster = clusterSelect.value;
+  const selectedBundle = bundleSelect.value;
+  const selectedPod = podSelect.value;
+  
+  if (selectedApp && selectedCluster && selectedBundle && selectedPod) {
+    updateStatusText('Loading pod logs...');
+    
+    // Show enhanced loading message
+    document.querySelector("#log code").innerHTML = `
+🚀 Loading logs for pod: ${selectedPod}
+📱 Application: ${selectedApp}
+🌐 Cluster: ${selectedCluster}
+📦 Bundle: ${selectedBundle}
+
+⏳ Searching for existing log files...
+⚡ If not found, logs will be auto-generated...
+
+Please wait while we retrieve or generate the latest logs...`;
+    
+    fetch("/api/pod-logs/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: new URLSearchParams({
+        application: selectedApp,
+        cluster: selectedCluster,
+        bundle: selectedBundle,
+        pod: selectedPod
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.logs) {
+        document.querySelector("#log code").innerText = data.logs;
+        
+        // Check if logs were auto-generated and show appropriate status
+        if (data.logs.includes("Source: auto-generated")) {
+          updateStatusText(`✨ Auto-generated logs for ${selectedPod.length > 20 ? selectedPod.substring(0, 17) + '...' : selectedPod}`);
+          showToast(`Logs auto-generated for ${selectedPod}`, "success");
+        } else if (data.logs.includes("Source: kubernetes-api")) {
+          updateStatusText(`🔄 Live logs from K8s for ${selectedPod.length > 20 ? selectedPod.substring(0, 17) + '...' : selectedPod}`);
+          showToast(`Live logs fetched from Kubernetes`, "success");
+        } else {
+          updateStatusText(`📄 Logs loaded for ${selectedPod.length > 20 ? selectedPod.substring(0, 17) + '...' : selectedPod}`);
+          showToast(`Log file loaded successfully`, "success");
+        }
+        
+        testCount++;
+        document.getElementById('test-count').textContent = testCount;
+      } else {
+        document.querySelector("#log code").innerText = data.error || "No logs available for this pod.";
+        updateStatusText('No logs available');
+        showToast('No logs found for this pod', "error");
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching pod logs:', error);
+      document.querySelector("#log code").innerText = `Error fetching pod logs: ${error.message}`;
+      updateStatusText('Error fetching logs');
+      showToast('Failed to fetch pod logs', "error");
+    });
+  } else {
+    updateStatusText('Please select all required fields');
+    showToast('Please select application, cluster, bundle, and pod', "error");
+    
+    // Highlight missing fields
+    if (!selectedApp) appSelect.classList.add('error-state');
+    if (!selectedCluster) clusterSelect.classList.add('error-state');
+    if (!selectedBundle) bundleSelect.classList.add('error-state');
+    if (!selectedPod) podSelect.classList.add('error-state');
+    
+    setTimeout(() => {
+      document.querySelectorAll('.error-state').forEach(el => {
+        el.classList.remove('error-state');
+      });
+    }, 3000);
+  }
+}
+
+  // Enhanced download functionality for logs
+  document.getElementById("download-btn").addEventListener("click", function () {
+    const logContent = document.querySelector("#log code").innerText;
+    
+    // Check if there's valid log content
+    if (!logContent || 
+        logContent === "Welcome to LogOps Testing Portal. Select an application, cluster, bundle, and pod to view logs." ||
+        logContent.includes("Loading logs") ||
+        logContent.includes("Please wait") ||
+        logContent.includes("Waiting for execution") ||
+        logContent.includes("Fetching pod logs")) {
+      updateStatusText("No log data available to download");
+      showToast("No log data available to download", "error");
+      this.classList.add('error-state');
+      setTimeout(() => this.classList.remove('error-state'), 2000);
+      return;
+    }
+    
+    // Set loading state
+    setButtonLoading(this, true);
+    
+    try {
+      // Get current selections for filename
+      const selectedApp = appSelect.value || 'unknown-app';
+      const selectedCluster = clusterSelect.value || 'unknown-cluster';
+      const selectedBundle = bundleSelect.value || 'unknown-bundle';
+      const selectedPod = podSelect.value || 'unknown-pod';
+      
+      // Create timestamp for unique filename
+      const now = new Date();
+      const timestamp = now.toISOString().slice(0, 19).replace(/[:.]/g, '-');
+      
+      // Generate descriptive filename
+      const filename = `LogOps_${selectedApp}_${selectedCluster}_${selectedBundle}_${selectedPod}_${timestamp}.log`;
+      
+      // Create download blob
+      const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create temporary download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = filename;
+      downloadLink.style.display = 'none';
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      // Clean up object URL
+      window.URL.revokeObjectURL(url);
+      
+      // Update status and show success message
+      updateStatusText(`Downloaded: ${filename}`);
+      showToast(`Log file downloaded: ${filename}`, "success");
+      
+      // Track the download on backend
+      fetch("/api/track-download/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: new URLSearchParams({
+          filename: filename,
+          app: selectedApp,
+          cluster: selectedCluster,
+          bundle: selectedBundle,
+          pod: selectedPod,
+          log_size: logContent.length
+        })
+      }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Download tracked successfully');
+        } else {
+          console.warn('Download tracking failed:', data.error);
+        }
+      }).catch(error => {
+        console.log('Download tracking failed:', error);
+        // Don't show error to user as download was successful
+      });
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      updateStatusText('Download failed');
+      showToast('Failed to download log file', "error");
+    } finally {
+      setButtonLoading(this, false);
+    }
+  });
+
+  function downloadCurrentLog() {
+    // This function already exists, redirect to use the new download functionality
+    document.getElementById("download-btn").click();
+  }
+
+  // CSRF token helper
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Button loading states
+  function setButtonLoading(button, isLoading) {
+    const originalText = button.getAttribute('data-original-text') || button.innerHTML;
+    if (!button.getAttribute('data-original-text')) {
+      button.setAttribute('data-original-text', originalText);
+    }
+    
+    if (isLoading) {
+      button.innerHTML = '<span class="loading-spinner"></span> Processing...';
+      button.disabled = true;
+    } else {
+      button.innerHTML = originalText;
+      button.disabled = false;
+    }
+  }
+
+  // Enhanced showToast function
+  function showToast(message, type = 'success') {
+    // Remove existing toast if any
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✅' : '❌';
+    toast.innerHTML = `<span class="toast-icon">${icon}</span>${message}`;
+    
+    // Add to page
+    document.body.appendChild(toast);
+    
+    // Show toast
+    setTimeout(() => toast.classList.add('show'), 100);
+    
+    // Hide toast after 4 seconds
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  // AI functionality
+  document.getElementById("summarize-btn").addEventListener("click", function () {
+    const log = document.querySelector("#log code").innerText;
+    if (log === "Welcome to LogOps Testing Portal. Select an application, cluster, bundle, and pod to view logs." || 
+        log.includes("Loading logs")) {
+      updateStatusText("No log data to summarize");
+      this.classList.add('error-state');
+      setTimeout(() => this.classList.remove('error-state'), 2000);
+      return;
+    }
+    
+    setButtonLoading(this, true);
+    
+    const summaryCard = document.getElementById('summary-card');
+    if (summaryCard.classList.contains('hidden')) {
+      toggleSummaryCard();
+    }
+    
+    document.getElementById("summary-output").innerHTML = `
+AI is analyzing your logs...
+Generating intelligent summary
+Identifying key patterns and insights
+
+This may take a few moments...`;
+    
+    fetch("/api/summarize/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: new URLSearchParams({ log_text: log })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("summary-output").innerText = data.summary || "No summary generated.";
+      updateStatusText('Summary generated');
+    })
+    .catch(error => {
+      document.getElementById("summary-output").innerText = `Error generating summary: ${error.message}`;
+      updateStatusText('Summary failed');
+    })
+    .finally(() => {
+      setButtonLoading(this, false);
+    });
+  });
+
+  document.getElementById("analyze-btn").addEventListener("click", function () {
+    const log = document.querySelector("#log code").innerText;
+    const email = document.getElementById("email-input").value;
+    
+    if (!email) {
+      updateStatusText("Please enter your email address");
+      document.getElementById("email-input").classList.add('error-state');
+      setTimeout(() => document.getElementById("email-input").classList.remove('error-state'), 3000);
+      return;
+    }
+    
+    if (log === "Welcome to LogOps Testing Portal. Select an application, cluster, bundle, and pod to view logs." || 
+        log.includes("Loading logs")) {
+      updateStatusText("No log data to analyze");
+      this.classList.add('error-state');
+      setTimeout(() => this.classList.remove('error-state'), 2000);
+      return;
+    }
+    
+    setButtonLoading(this, true);
+    
+    const summaryCard = document.getElementById('summary-card');
+    if (summaryCard.classList.contains('hidden')) {
+      toggleSummaryCard();
+    }
+    
+    document.getElementById("summary-output").innerHTML = `
+Performing Root Cause Analysis...
+Generating report and sending to ${email}
+Please wait...`;
+    
+    // First get the analysis
+    fetch("/api/analyze/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: new URLSearchParams({ log_text: log })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const analysis = data.analysis || "No analysis generated.";
+      document.getElementById("summary-output").innerText = analysis;
+      
+      // Then send via email
+      const selectedPod = document.getElementById("pod-select").value || "Unknown Pod";
+      
+      return fetch("/api/send-rca-email/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: new URLSearchParams({ 
+          email: email,
+          analysis: analysis,
+          pod_name: selectedPod
+        })
+      });
+    })
+    .then(res => res.json())
+    .then(emailData => {
+      if (emailData.success) {
+        updateStatusText('RCA completed and sent to email');
+      } else {
+        updateStatusText('RCA completed but email failed to send');
+        console.error('Email error:', emailData.error);
+      }
+    })
+    .catch(error => {
+      document.getElementById("summary-output").innerText = `Error performing analysis: ${error.message}`;
+      updateStatusText('RCA failed');
+    })
+    .finally(() => {
+      setButtonLoading(this, false);
+    });
+  });
+
+  // Initialize the application
+  updateStatusText('Initializing...');
+
+  // Uptime counter
+  let startTime = Date.now();
+  setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const hours = Math.floor(elapsed / 3600000);
+    const minutes = Math.floor((elapsed % 3600000) / 60000);
+    const seconds = Math.floor((elapsed % 60000) / 1000);
+    document.getElementById('uptime').textContent = 
+      `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }, 1000);
+
+  // Ready state
+  setTimeout(() => {
+    updateStatusText('LogOps Ready');
+  }, 1000);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+      switch(e.key) {
+        case 'f':
+          e.preventDefault();
+          document.getElementById('log-search').focus();
+          break;
+        case 's':
+          e.preventDefault();
+          document.getElementById('summarize-btn').click();
+          break;
+        case 'r':
+          e.preventDefault();
+          document.getElementById('analyze-btn').click();
+          break;
+        case 'd':
+          e.preventDefault(); // Prevent browser bookmark shortcut
+          document.getElementById('download-btn').click();
+          break;
+      }
+    }
+  });
+
+  // Form validation
+  function validateConfiguration() {
+    const required = [appSelect, clusterSelect, bundleSelect, podSelect];
+    let isValid = true;
+    
+    required.forEach(select => {
+      if (!select.value) {
+        select.classList.add('error-state');
+        isValid = false;
+      } else {
+        select.classList.remove('error-state');
+      }
+    });
+    
+    return isValid;
+  }
+
+  // Error handling
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+    updateStatusText('Application error occurred');
+  });
+
+  console.log('LogOps Testing Portal initialized successfully');
+</script>
+</body>
+</html>
