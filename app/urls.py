@@ -33,6 +33,6 @@ urlpatterns = [
     
     # Health check
     path('health/', views.health_check, name='health_check'),
-    path('test-elasticsearch/', views.test_elasticsearch_connection),
+    path("test-elasticsearch/", views.test_elasticsearch_connection, name="test_elasticsearch"),
 
 ]

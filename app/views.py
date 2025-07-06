@@ -1398,3 +1398,4 @@ def get_download_stats(request):
 def health_check(request):
     """Basic health check endpoint"""
     return JsonResponse({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
+
